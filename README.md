@@ -119,6 +119,19 @@ superdetial-MCLing/
 3. 所有测试都能通过
 4. 提交信息清晰明了
 
+## 参与贡献
+
+- 如果你发现了一些问题，可以提Issue进行反馈，如果提完没有人回复你可以联系[保姆团队](https://github.com/datawhalechina/DOPMC/blob/main/OP.md)的同学进行反馈跟进~
+- 如果你想参与贡献本项目，可以提Pull request，如果提完没有人回复你可以联系[保姆团队](https://github.com/datawhalechina/DOPMC/blob/main/OP.md)的同学进行反馈跟进~
+- 如果你对 Datawhale 很感兴趣并想要发起一个新的项目，请按照[Datawhale开源项目指南](https://github.com/datawhalechina/DOPMC/blob/main/GUIDE.md)进行操作即可~
+
+## 关注我们
+
+<div align=center>
+<p>扫描下方二维码关注公众号：Datawhale</p>
+<img src="https://raw.githubusercontent.com/datawhalechina/pumpkin-book/master/res/qrcode.jpeg" width = "180" height = "180">
+</div>
+
 ## 许可证
 
 本项目采用MIT许可证。详见 [LICENSE](LICENSE) 文件。
