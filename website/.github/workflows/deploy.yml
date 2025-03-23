@@ -1,0 +1,44 @@
+# 部署到 GitHub Pages 的工作流配置
+name: Deploy to GitHub Pages
+
+on:
+  # 在 main 分支上的 push 触发部署
+  push:
+    branches: [main]
+  # 允许手动触发部署
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 安装依赖
+      - name: Install dependencies
+        run: |
+          cd website
+          npm install
+
+      # 构建网站
+      - name: Build
+        run: |
+          cd website
+          npm run docs:build
+
+      # 部署到 GitHub Pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: website/docs/.vitepress/dist
+          # 将 cname 文件放入构建目录
+          # cname: your-domain.com # 如果您有自定义域名，取消此注释并修改域名 
