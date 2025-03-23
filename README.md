@@ -65,12 +65,12 @@ pip install numpy matplotlib scikit-learn pandas
 
 1. 克隆项目到本地：
 ```bash
-git clone https://github.com/yourusername/superdetial-MCLing.git
+git clone https://github.com/datawhalechina/simple-ml-code.git
 ```
 
 2. 进入项目目录：
 ```bash
-cd superdetial-MCLing
+cd simple-ml-code
 ```
 
 3. 安装依赖包：
@@ -86,7 +86,7 @@ python docs/chapter1/线性回归.py
 ## 项目结构
 
 ```
-superdetial-MCLing/
+simple-ml-code/
 ├── docs/
 │   ├── chapter1/
 │   │   ├── 线性回归.md
