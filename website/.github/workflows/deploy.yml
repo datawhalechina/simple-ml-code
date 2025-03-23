@@ -9,39 +9,56 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
-
-      # 安装依赖
+          cache: npm
+          cache-dependency-path: './website/package-lock.json'
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
       - name: Install dependencies
         run: |
           cd website
-          npm install
-
-      # 构建网站
+          npm ci
+      
       - name: Build
         run: |
           cd website
           npm run docs:build
-
-      # 部署到 GitHub Pages
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: website/docs/.vitepress/dist
-          # 将 cname 文件放入构建目录
-          # cname: your-domain.com # 如果您有自定义域名，取消此注释并修改域名 
+          path: website/docs/.vitepress/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
