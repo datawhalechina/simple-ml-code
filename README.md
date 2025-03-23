@@ -141,7 +141,7 @@ simple-ml-code/
 如果您有任何问题或建议，请通过以下方式联系：
 
 - 提交Issue
-- 发送邮件至：[your-email@example.com]
+- 发送邮件至：[15270737104@163.com]
 
 ## 致谢
 
