@@ -40,11 +40,13 @@ jobs:
         run: |
           cd website
           npm ci
+          npm list vitepress
       
       - name: Build
         run: |
           cd website
           npm run docs:build
+          ls -la docs/.vitepress/dist
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
