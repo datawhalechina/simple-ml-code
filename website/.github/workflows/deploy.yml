@@ -42,6 +42,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: website/dist
+          publish_dir: website/docs/.vitepress/dist
           # 将 cname 文件放入构建目录
           # cname: your-domain.com # 如果您有自定义域名，取消此注释并修改域名 
