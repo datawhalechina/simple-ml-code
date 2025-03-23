@@ -5,6 +5,7 @@ export default defineConfig({
   description: "从零开始的机器学习实践教程",
   lang: 'zh-CN',
   base: '/superdetial-MCLing/',
+  outDir: '../dist',
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
