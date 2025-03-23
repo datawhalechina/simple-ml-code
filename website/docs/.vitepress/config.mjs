@@ -4,7 +4,7 @@ export default defineConfig({
   title: "机器学习教程",
   description: "从零开始的机器学习实践教程",
   lang: 'zh-CN',
-  base: '/superdetial-MCLing/',
+  base: '/simple-ml-code/',
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
@@ -24,7 +24,7 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/your-username/superdetial-MCLing' }
+      { icon: 'github', link: 'https://github.com/ACGpp/simple-ml-code' }
     ],
     footer: {
       message: '用心打造的机器学习教程',
