@@ -7,8 +7,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn import tree
-from sklearn.metrics import classification_report, confusion_matrix
-import time
 
 def load_and_prepare_data():
     """
@@ -64,20 +62,26 @@ def explore_data(df):
         antV = ['#1890FF', '#2FC25B', '#FACC14', '#223273', '#8543E0', '#13C2C2', '#3436c7', '#F04864']
         
         # 绘制violinplot
-        print("\n绘制特征分布图...")
-        f, axes = plt.subplots(2, 2, figsize=(10, 10))
+        # 绘制violinplot
+        f, axes = plt.subplots(2, 2, figsize=(8, 8), sharex=True)
         sns.despine(left=True)
-        for i, col in enumerate(df.columns[:-1]):
-            sns.violinplot(x='Species', y=col, data=df, palette=antV, ax=axes[i//2, i%2])
-        plt.suptitle('各特征在不同类别下的分布')
-        plt.tight_layout()
+        sns.violinplot(x='Species', y=df.columns[0], data=df, palette=antV, ax=axes[0, 0])
+        sns.violinplot(x='Species', y=df.columns[1], data=df, palette=antV, ax=axes[0, 1])
+        sns.violinplot(x='Species', y=df.columns[2], data=df, palette=antV, ax=axes[1, 0])
+        sns.violinplot(x='Species', y=df.columns[3], data=df, palette=antV, ax=axes[1, 1])
         plt.show()
         
-        # 绘制安德鲁曲线
-        print("绘制安德鲁曲线...")
-        plt.figure(figsize=(10, 6))
-        plotting.andrews_curves(df, 'Species', colormap='cool')
-        plt.title('鸢尾花数据集的安德鲁曲线')
+        # 绘制pointplot
+        f, axes = plt.subplots(2, 2, figsize=(8, 6), sharex=True)
+        sns.despine(left=True)
+        sns.pointplot(x='Species', y=df.columns[0], data=df, color=antV[1], ax=axes[0, 0])
+        sns.pointplot(x='Species', y=df.columns[1], data=df, color=antV[1], ax=axes[0, 1])
+        sns.pointplot(x='Species', y=df.columns[2], data=df, color=antV[1], ax=axes[1, 0])
+        sns.pointplot(x='Species', y=df.columns[3], data=df, color=antV[1], ax=axes[1, 1])
+        plt.show()
+        
+        plt.subplots(figsize=(8,6))
+        plotting.andrews_curves(df,'Species',colormap='cool')
         plt.show()
         
     except Exception as e:
@@ -96,85 +100,21 @@ def train_and_evaluate_model(X, y, feature_names, labels):
         metrics: 评估指标
     """
     try:
-        # 划分训练集和测试集
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.4, random_state=42
-        )
+        X_train,test_x,y_train,test_lab=train_test_split(X,y,test_size=0.4,random_state=42)
         
-        # 训练模型
-        print("\n开始训练决策树模型...")
-        start_time = time.time()
+        model=DecisionTreeClassifier(max_depth=3,random_state=42)
+        model.fit(X_train,y_train)
         
-        model = DecisionTreeClassifier(max_depth=3, random_state=42)
-        model.fit(X_train, y_train)
+        text_representation=tree.export_text(model)
+        print(text_representation)
         
-        training_time = time.time() - start_time
-        print(f"模型训练完成，用时: {training_time:.2f}秒")
-        
-        # 评估模型
-        train_score = model.score(X_train, y_train)
-        test_score = model.score(X_test, y_test)
-        
-        # 预测
-        y_pred = model.predict(X_test)
-        
-        # 计算评估指标
-        metrics = {
-            'train_score': train_score,
-            'test_score': test_score,
-            'training_time': training_time,
-            'classification_report': classification_report(y_test, y_pred),
-            'confusion_matrix': confusion_matrix(y_test, y_pred)
-        }
-        
-        return model, metrics, X_test, y_test
+        plt.figure(figsize=(30,10),facecolor='g')
+        a=tree.plot_tree(model,feature_names=feature_names,class_names=labels,rounded=True,filled=True,fontsize=14)
     except Exception as e:
         print(f"训练模型时出错: {str(e)}")
         return None, None, None, None
 
-def visualize_tree(model, feature_names, labels):
-    """
-    可视化决策树
-    参数:
-        model: 训练好的决策树模型
-        feature_names: 特征名称列表
-        labels: 标签名称列表
-    """
-    try:
-        # 以文字形式输出树
-        print("\n决策树结构：")
-        text_representation = tree.export_text(model)
-        print(text_representation)
-        
-        # 绘制决策树
-        print("\n绘制决策树可视化图...")
-        plt.figure(figsize=(30, 10))
-        tree.plot_tree(model,
-                      feature_names=feature_names,
-                      class_names=labels,
-                      rounded=True,
-                      filled=True,
-                      fontsize=14)
-        plt.title('决策树可视化')
-        plt.show()
-    except Exception as e:
-        print(f"可视化决策树时出错: {str(e)}")
 
-def plot_confusion_matrix(cm):
-    """
-    绘制混淆矩阵
-    参数:
-        cm: 混淆矩阵
-    """
-    try:
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-        plt.title('混淆矩阵')
-        plt.xlabel('预测标签')
-        plt.ylabel('真实标签')
-        plt.show()
-    except Exception as e:
-        print(f"绘制混淆矩阵时出错: {str(e)}")
 
 def main():
     # 加载和准备数据
@@ -185,24 +125,7 @@ def main():
     # 数据探索
     explore_data(df)
     
-    # 训练和评估模型
-    model, metrics, X_test, y_test = train_and_evaluate_model(X, y, feature_names, labels)
-    if model is None or metrics is None:
-        return
-    
-    # 打印评估结果
-    print("\n模型评估结果:")
-    print(f"训练集准确率: {metrics['train_score']:.4f}")
-    print(f"测试集准确率: {metrics['test_score']:.4f}")
-    print(f"训练用时: {metrics['training_time']:.2f}秒")
-    print("\n分类报告:")
-    print(metrics['classification_report'])
-    
-    # 绘制混淆矩阵
-    plot_confusion_matrix(metrics['confusion_matrix'])
-    
-    # 可视化决策树
-    visualize_tree(model, feature_names, labels)
+    train_and_evaluate_model(X, y, feature_names, labels)
 
 if __name__ == "__main__":
     main()
