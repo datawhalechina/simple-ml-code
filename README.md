@@ -146,5 +146,6 @@ simple-ml-code/
 
 ## 致谢
 
-感谢https://github.com/datawhalechina/machine-learning-toy-code教程的创作者们
+感谢https://github.com/datawhalechina/machine-learning-toy-code教程的创作者们  
+
 感谢https://github.com/datawhalechina/pumpkin-book 南瓜书作者Sm1les
