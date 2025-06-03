@@ -1,6 +1,11 @@
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 import os
+import sys
+
+# 获取项目根目录并添加到sys.path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.append(project_root)
 
 # 从本地加载MNIST数据集
 def load_mnist_data():
