@@ -6,8 +6,8 @@
 
 ```python
 import numpy as np
-from sklearn.datasets import fetch_openml
 from sklearn.linear_model import LogisticRegression
+import os
 ```
 
 ### 代码解释
@@ -18,13 +18,7 @@ import numpy as np
 ```
 这行代码导入了 numpy 库，别名为 np。numpy 是一个强大的数学计算库，就像是我们的计算器，帮助我们进行各种数值运算。
 
-2. **导入数据集工具**
-```python
-from sklearn.datasets import fetch_openml
-```
-从 sklearn 库的 datasets 模块导入了 fetch_openml 函数。该函数用于从 OpenML（一个开放的机器学习数据平台）加载数据集。这就像是我们去图书馆借书一样，fetch_openml 帮我们从数据仓库中取出需要的数据集。
-
-3. **导入逻辑回归模型**
+2. **导入逻辑回归模型**
 ```python
 from sklearn.linear_model import LogisticRegression
 ```
@@ -43,52 +37,68 @@ from sklearn.linear_model import LogisticRegression
 ## 2.2 加载数据集
 
 ```python
-mnist = fetch_openml('mnist_784')
-X, y = mnist['data'], mnist['target']
-X_train = np.array(X[:60000], dtype=float)
-y_train = np.array(y[:60000], dtype=float)
-X_test = np.array(X[60000:], dtype=float)
-y_test = np.array(y[60000:], dtype=float)
+# 从本地加载MNIST数据集
+def load_mnist_data():
+    from datasets.MNIST.raw.load_data import load_local_mnist
+    base_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'datasets', 'MNIST', 'raw')
+    (X_train, y_train), (X_test, y_test) = load_local_mnist(
+        x_train_path=os.path.join(base_path, 'train-images-idx3-ubyte.gz'),
+        y_train_path=os.path.join(base_path, 'train-labels-idx1-ubyte.gz'),
+        x_test_path=os.path.join(base_path, 't10k-images-idx3-ubyte.gz'),
+        y_test_path=os.path.join(base_path, 't10k-labels-idx1-ubyte.gz'),
+        normalize=True,
+        one_hot=False
+    )
+    return X_train, y_train, X_test, y_test
+
+# 加载数据
+X_train, y_train, X_test, y_test = load_mnist_data()
 ```
 
 ### 代码解释
 
-1. **加载 MNIST 数据集**
+1. **定义数据加载函数**
 ```python
-mnist = fetch_openml('mnist_784')
+def load_mnist_data():
 ```
-这行代码通过 fetch_openml 函数加载了名为 mnist_784 的数据集。该数据集是一个包含手写数字（0-9）的图像数据集，784 表示每个图像有 784 个像素值（28×28 像素）。mnist 是加载后的数据集对象，此后这个 mnist 就代表这个数据集，就像是我们说小明很擅长数学，那一提到小明我们就知道他数学很好。
+这行代码定义了一个名为 load_mnist_data 的函数，用于加载本地 MNIST 数据集。函数的作用就像是一个专门的工具人，我们告诉它数据在哪里，它就帮我们把数据取出来。
 
-2. **分离特征和标签**
+2. **导入和设置路径**
 ```python
-X, y = mnist['data'], mnist['target']
+from datasets.MNIST.raw.load_data import load_local_mnist
+base_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'datasets', 'MNIST', 'raw')
 ```
-这行代码将 mnist 数据集中的数据分成特征 X 和标签 y：
-- mnist['data'] 包含了图像数据（每个图像有 784 个像素）
-- mnist['target'] 包含了这些图像对应的标签（即它们表示的数字，0-9）
+这两行代码首先导入了我们自定义的 load_local_mnist 函数，然后设置了数据集的路径。base_path 就像是一个地图，告诉程序去哪里找数据文件。os.path.join 函数就像是在帮我们连接路径的各个部分，确保在不同的操作系统上都能正确找到文件。
 
-让我们用生活中的例子来理解特征和标签：
-- 特征是事物的特点，就像人的身高、体重、年龄等。在图像识别中，特征就是图像的像素值。
-- 标签则是我们要预测的目标，比如根据一个人的特征判断他是学生还是老师，这里的"学生"和"老师"就是标签。
-
-3. **准备训练数据**
+3. **加载数据**
 ```python
-X_train = np.array(X[:60000], dtype=float)
-y_train = np.array(y[:60000], dtype=float)
+(X_train, y_train), (X_test, y_test) = load_local_mnist(
+    x_train_path=os.path.join(base_path, 'train-images-idx3-ubyte.gz'),
+    y_train_path=os.path.join(base_path, 'train-labels-idx1-ubyte.gz'),
+    x_test_path=os.path.join(base_path, 't10k-images-idx3-ubyte.gz'),
+    y_test_path=os.path.join(base_path, 't10k-labels-idx1-ubyte.gz'),
+    normalize=True,
+    one_hot=False
+)
 ```
-我们使用 mnist_784 的前 60000 个样本用于训练：
-- 将 X（特征）的前 60000 个样本转换为 NumPy 数组并赋值给 X_train
-- 指定数据类型为 float（浮点型），因为机器学习算法要求输入数据是浮点数类型
-- 同样的操作也应用于标签 y，创建 y_train
+这段代码调用 load_local_mnist 函数来加载数据。它需要四个文件路径参数：
+- train-images-idx3-ubyte.gz：训练图像数据
+- train-labels-idx1-ubyte.gz：训练标签数据
+- t10k-images-idx3-ubyte.gz：测试图像数据
+- t10k-labels-idx1-ubyte.gz：测试标签数据
 
-4. **准备测试数据**
+normalize=True 表示我们要对图像数据进行归一化处理，将像素值从 0-255 变成 0-1 之间的小数，这样可以让模型训练更稳定。
+one_hot=False 表示我们不使用独热编码来表示标签，而是直接使用 0-9 的数字标签。
+
+4. **调用函数获取数据**
 ```python
-X_test = np.array(X[60000:], dtype=float)
-y_test = np.array(y[60000:], dtype=float)
+X_train, y_train, X_test, y_test = load_mnist_data()
 ```
-将剩余的样本（从第 60001 个开始）用作测试数据：
-- 转换为 NumPy 数组并赋值给 X_test 和 y_test
-- 这些数据将用来测试模型的性能
+这行代码调用我们定义的函数来获取数据。数据集被分成了训练集（X_train, y_train）和测试集（X_test, y_test）：
+- X_train：训练图像数据，包含 60000 张图片
+- y_train：训练图片对应的标签
+- X_test：测试图像数据，包含 10000 张图片
+- y_test：测试图片对应的标签
 
 5. **查看数据形状**
 ```python
@@ -162,4 +172,4 @@ print("Test score with L1 penalty: %.4f" % score)
 2. 然后创建一个逻辑回归模型并训练它
 3. 最后使用训练好的模型评估在测试集上的准确性
 
-逻辑回归虽然名字中有"回归"二字，但实际上是一种分类算法，是机器学习中的基础算法之一。它通过一个 S 形的函数（sigmoid 函数）将线性模型的输出转换为 0 到 1 之间的概率值，进而用于分类任务。就像是一个决策者，它会告诉我们："根据这些特征，我有多大把握认为这个样本属于某个类别。" 
+逻辑回归虽然名字中有"回归"二字，但实际上是一种分类算法，是机器学习中的基础算法之一。它通过一个 S 形的函数（sigmoid 函数）将线性模型的输出转换为 0 到 1 之间的概率值，进而用于分类任务。就像是一个决策者，它会告诉我们："根据这些特征，我有多大把握认为这个样本属于某个类别。"

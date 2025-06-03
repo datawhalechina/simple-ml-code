@@ -1,4 +1,4 @@
-# 第6章：朴素贝叶斯分类器
+# 第六章：朴素贝叶斯分类器
 
 朴素贝叶斯分类器是一种基于贝叶斯定理的概率分类算法。它假设特征之间相互独立，这个"朴素"的假设虽然在实际应用中很少成立，但该算法仍然在许多实际应用中表现出色。
 
@@ -23,15 +23,15 @@
 让我们通过一个具体的例子来实现朴素贝叶斯分类器。首先，我们需要导入必要的库：
 
 ```python
-import numpy as np  # 导入numpy库，用于数值计算
-import matplotlib.pyplot as plt  # 导入matplotlib库，用于数据可视化
-from sklearn.datasets import make_classification  # 导入数据生成工具
-from sklearn.naive_bayes import GaussianNB  # 导入高斯朴素贝叶斯分类器
-from sklearn.model_selection import train_test_split, cross_val_score  # 导入数据集划分和交叉验证工具
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix  # 导入评估指标
-from sklearn.preprocessing import StandardScaler  # 导入数据标准化工具
-import seaborn as sns  # 导入seaborn库，用于美化可视化
-import time  # 导入time库，用于计算运行时间
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+import seaborn as sns
+import time
 ```
 
 ### 6.2.1 数据生成和预处理
@@ -54,13 +54,12 @@ def generate_data(n_samples=1000, n_features=2, n_classes=2, n_clusters_per_clas
     """
     try:
         print(f"生成{n_classes}类，{n_samples}个样本，{n_features}个特征的随机数据...")
-        # 使用make_classification生成随机分类数据
         X, y = make_classification(
-            n_samples=n_samples,  # 设置样本数量
-            n_features=n_features,  # 设置特征数量
-            n_classes=n_classes,  # 设置类别数量
-            n_clusters_per_class=n_clusters_per_class,  # 设置每个类别的聚类数量
-            random_state=random_state  # 设置随机种子，确保结果可重现
+            n_samples=n_samples,
+            n_features=n_features,
+            n_classes=n_classes,
+            n_clusters_per_class=n_clusters_per_class,
+            random_state=random_state
         )
         return X, y
     except Exception as e:
@@ -81,9 +80,7 @@ def preprocess_data(X):
     """
     try:
         print("对数据进行标准化处理...")
-        # 创建StandardScaler对象
         scaler = StandardScaler()
-        # 对数据进行标准化处理
         X_scaled = scaler.fit_transform(X)
         return X_scaled
     except Exception as e:
@@ -109,31 +106,25 @@ def train_and_evaluate_model(X_train, X_test, y_train, y_test, var_smoothing=1e-
     """
     try:
         print("\n开始训练朴素贝叶斯模型...")
-        # 记录开始时间
         start_time = time.time()
         
-        # 创建并训练模型
-        model = GaussianNB(var_smoothing=var_smoothing)  # 创建高斯朴素贝叶斯模型
-        model.fit(X_train, y_train)  # 训练模型
+        model = GaussianNB(var_smoothing=var_smoothing)
+        model.fit(X_train, y_train)
         
-        # 计算训练时间
         training_time = time.time() - start_time
         print(f"模型训练完成，用时: {training_time:.2f}秒")
         
-        # 评估模型
-        train_score = model.score(X_train, y_train)  # 计算训练集准确率
-        test_score = model.score(X_test, y_test)  # 计算测试集准确率
+        train_score = model.score(X_train, y_train)
+        test_score = model.score(X_test, y_test)
         
-        # 预测
-        y_pred = model.predict(X_test)  # 对测试集进行预测
+        y_pred = model.predict(X_test)
         
-        # 计算评估指标
         metrics = {
-            'train_score': train_score,  # 训练集准确率
-            'test_score': test_score,  # 测试集准确率
-            'training_time': training_time,  # 训练时间
-            'classification_report': classification_report(y_test, y_pred),  # 分类报告
-            'confusion_matrix': confusion_matrix(y_test, y_pred)  # 混淆矩阵
+            'train_score': train_score,
+            'test_score': test_score,
+            'training_time': training_time,
+            'classification_report': classification_report(y_test, y_pred),
+            'confusion_matrix': confusion_matrix(y_test, y_pred)
         }
         
         return model, metrics
@@ -144,69 +135,69 @@ def train_and_evaluate_model(X_train, X_test, y_train, y_test, var_smoothing=1e-
 
 ### 6.2.3 交叉验证评估
 
-我们添加交叉验证评估功能：
+为了更全面地评估模型性能，我们使用交叉验证：
 
 ```python
-def evaluate_with_cross_validation(model, X, y, cv=5):
+def cross_validate_model(model, X, y, cv=5):
     """
     使用交叉验证评估模型
     参数:
-        model: 训练好的模型
+        model: 待评估的模型
         X: 特征矩阵
         y: 标签数组
         cv: 交叉验证折数
     返回:
-        交叉验证分数
+        scores: 交叉验证得分
     """
     try:
-        print("\n执行交叉验证评估...")
-        # 执行交叉验证
+        print(f"\n开始进行{cv}折交叉验证...")
+        start_time = time.time()
+        
         scores = cross_val_score(model, X, y, cv=cv)
-        print(f"交叉验证分数: {scores}")
-        print(f"平均分数: {scores.mean():.4f} (+/- {scores.std() * 2:.4f})")
+        
+        cv_time = time.time() - start_time
+        print(f"交叉验证完成，用时: {cv_time:.2f}秒")
+        
         return scores
     except Exception as e:
-        print(f"交叉验证评估时出错: {str(e)}")
+        print(f"交叉验证时出错: {str(e)}")
         return None
 ```
 
 ### 6.2.4 特征重要性分析
 
-添加特征重要性分析功能：
+对于朴素贝叶斯模型，特征重要性通常不是直接可用的，但我们可以通过分析每个特征的方差来间接理解其对模型的影响：
 
 ```python
-def analyze_feature_importance(model, feature_names=None):
+def analyze_feature_importance(model, feature_names):
     """
-    分析特征重要性
+    分析特征重要性（针对高斯朴素贝叶斯）
     参数:
-        model: 训练好的模型
+        model: 训练好的高斯朴素贝叶斯模型
         feature_names: 特征名称列表
-    返回:
-        特征重要性得分
     """
     try:
-        # 如果没有提供特征名称，使用默认名称
-        if feature_names is None:
-            feature_names = [f"特征{i+1}" for i in range(model.n_features_in_)]
+        print("\n分析特征重要性...")
+        # 高斯朴素贝叶斯没有直接的feature_importances_属性
+        # 可以通过查看每个特征的方差来间接理解其重要性
+        # 较小的方差可能意味着该特征在区分类别上更重要
         
-        # 计算每个特征的方差作为重要性指标
-        importance = np.var(model.theta_, axis=0)
-        importance = importance / np.sum(importance)  # 归一化
+        # 获取每个类别的特征均值和方差
+        theta = model.theta_  # 每个类别的特征均值
+        sigma = model.sigma_  # 每个类别的特征方差
         
-        # 绘制特征重要性图
-        plt.figure(figsize=(10, 6))
-        plt.bar(feature_names, importance)
-        plt.title('特征重要性分析')
-        plt.xlabel('特征')
-        plt.ylabel('重要性得分')
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
-        
-        return dict(zip(feature_names, importance))
+        print("\n特征均值 (theta_):")
+        for i, name in enumerate(feature_names):
+            print(f"  {name}: {theta_[:, i]}")
+            
+        print("\n特征方差 (sigma_):")
+        for i, name in enumerate(feature_names):
+            print(f"  {name}: {sigma_[:, i]}")
+            
+        print("\n注意：对于高斯朴素贝叶斯，特征重要性不是直接可用的。这里展示的是每个特征在不同类别下的均值和方差，可以间接反映特征的区分能力。较小的方差可能意味着该特征在区分类别上更重要。")
+            
     except Exception as e:
-        print(f"特征重要性分析时出错: {str(e)}")
-        return None
+        print(f"分析特征重要性时出错: {str(e)}")
 ```
 
 ### 6.2.5 可视化结果
@@ -264,50 +255,52 @@ def plot_confusion_matrix(cm):
         print(f"绘制混淆矩阵时出错: {str(e)}")
 ```
 
-### 6.2.6 主函数
+### 6.2.5 完整示例和结果展示
 
-最后，我们将所有功能整合到主函数中：
+最后，我们将所有函数整合到一个完整的示例中，并展示结果：
 
 ```python
 def main():
-    # 生成数据
-    X, y = generate_data(n_samples=1000, n_features=2, n_classes=2)
-    if X is None or y is None:
+    print("朴素贝叶斯分类器示例")
+    
+    X, y = generate_data(n_samples=1000, n_features=2, n_classes=2, random_state=42)
+    if X is None:
         return
     
-    # 数据预处理
     X_scaled = preprocess_data(X)
     if X_scaled is None:
         return
     
-    # 划分训练集和测试集
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.2, random_state=42
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42)
+    print(f"\n训练集大小: {len(X_train)}，测试集大小: {len(X_test)}")
     
-    # 训练和评估模型
     model, metrics = train_and_evaluate_model(X_train, X_test, y_train, y_test)
-    if model is None or metrics is None:
+    if model is None:
         return
     
-    # 打印评估指标
-    print_metrics(metrics)
+    print("\n模型评估结果:")
+    print(f"训练集准确率: {metrics['train_score']:.4f}")
+    print(f"测试集准确率: {metrics['test_score']:.4f}")
+    print("分类报告:\n", metrics['classification_report'])
+    print("混淆矩阵:\n", metrics['confusion_matrix'])
     
-    # 绘制混淆矩阵
-    plot_confusion_matrix(metrics['confusion_matrix'])
+    cv_scores = cross_validate_model(model, X_scaled, y)
+    if cv_scores is not None:
+        print("\n交叉验证分数:", cv_scores)
+        print(f"交叉验证平均分数: {cv_scores.mean():.4f} (+/- {cv_scores.std() * 2:.4f})")
+        
+    feature_names = [f'Feature_{i+1}' for i in range(X.shape[1])]
+    analyze_feature_importance(model, feature_names)
     
-    # 绘制决策边界
-    plot_decision_boundary(model, X_scaled, y)
-    
-    # 交叉验证评估
-    evaluate_with_cross_validation(model, X_scaled, y)
-    
-    # 特征重要性分析
-    analyze_feature_importance(model)
+    print("\n示例运行完毕。")
 
 if __name__ == "__main__":
     main()
 ```
+
+### 6.2.6 总结
+
+本节通过一个完整的示例，详细介绍了朴素贝叶斯分类器的实现过程，包括数据生成、预处理、模型训练、评估、交叉验证以及特征重要性分析。朴素贝叶斯模型因其简单、高效且在文本分类等领域表现出色而广受欢迎。尽管其“朴素”假设在实际中往往不成立，但在许多情况下仍能取得良好的效果。
 
 ## 6.3 算法特点
 
@@ -358,4 +351,4 @@ if __name__ == "__main__":
 3. 需要先验概率
 4. 对特征之间的相关性考虑不足
 
-在实际应用中，我们需要根据具体问题选择合适的特征表示方法，并注意特征之间的相关性，以获得更好的分类效果。 
+在实际应用中，我们需要根据具体问题选择合适的特征表示方法，并注意特征之间的相关性，以获得更好的分类效果。
