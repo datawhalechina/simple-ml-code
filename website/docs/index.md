@@ -69,8 +69,8 @@ features:
 7. [总结](/chapters/chapter7) - 概率分类器 
  
 ## 补充包：
-1.[Pandas基本操作](/chapters/pandas)    
+1. [Pandas基本操作](/chapters/pandas)    
 
-2.[进阶pandas](/chapters/propandas)
+2. [进阶pandas](/chapters/propandas)
 
 每个章节都包含理论讲解、代码实现和实践练习，帮助你全面掌握相关知识。 
