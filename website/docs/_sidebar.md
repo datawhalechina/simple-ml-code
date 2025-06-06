@@ -7,4 +7,4 @@
 * [第6章：贝叶斯分类器](chapters/chapter6.md) 
 * [第7章：总结](chapters/chapter7.md)
 * [加餐1：pandas](chapters/pandas.md)
-* [加餐2：propandas](chapters/propands.md)
+* [加餐2：propandas](chapters/propandas.md)

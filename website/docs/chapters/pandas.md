@@ -1,4 +1,4 @@
-#Pandas基本操作
+# Pandas基本操作
 需要跑代码，请创建一个新的python文件，pandas_learning.py
 首先我们学习导入pandas和创建DataFrame的两种方式
 ```python
@@ -49,7 +49,7 @@ print(df1.describe())#查看基本统计
 
 print(df1.head(2))#查看前2行的数据
 ```
-数据选择操作：
+### 数据选择操作：
 ```python
 print(df1['name'])#选择单列
 
@@ -57,7 +57,7 @@ print(df1['name','age'])#选择多列
 
 print(df1[df1['age']>30])#按条件筛选，这里是筛选age大于30的数据
 ```
-数据修改操作：
+### 数据修改操作：
 ```python
 #添加新列
 df1['奖金']=[1000,2000,3000]#添加奖金列及其数据

@@ -1,6 +1,7 @@
+# 进阶Pandas 
 需要跑代码，请同学们创建pandas_advanced.py文件
 注意，不要偷懒创建名为pandas的文件，这样会导致我们在后续的库函数使用中，因为IDE自动识别你创建的pandas而无法导入真正的pandas包
-1.创建更复杂的数据集
+## 1.创建更复杂的数据集
 ```python
 import pandas as pd
 import numpy as np
@@ -24,7 +25,7 @@ df=pd.DataFrame({
 #这样，我们就得到了一个包含5行4列的数据表，用于表示这5天的天气情况。
 print(df)
 ```
-2.数据聚合操作
+## 2.数据聚合操作
 ```python
 print(df.describe())#上节讲到的基本统计量
 
@@ -32,7 +33,7 @@ print(df.mean())#每列平均值
 
 print(df.std())#每列标准差
 ```
-3.时间处理
+## 3.时间处理
 ```python
 #提取时间特征
 df['年份']=df['日期'].dt.year
@@ -40,14 +41,14 @@ df['月份']=df['日期'].dt.month
 df['星期']=df['日期'].dt.dayofweek
 print(df)
 ```
-4.数据分组
+## 4.数据分组
 ```python
 #按月份分组并计算平均值
 df['月份']=df['日期'].dt.month
 grouped=df.groupby('月份').mean()#按月份分组的平均值
 print(grouped）
 ```
-5.数据透视表
+## 5.数据透视表
 ```python
 #创建更复杂的数据，加入风向
 df_pivot = pd.DataFrame({
@@ -73,7 +74,7 @@ pivot_table = pd.pivot_table(
 
 print(pivot_table)#打印风向和月份的透视表
 ```
-6.数据清洗（重要！）
+## 6.数据清洗（重要！）
 ```python
 #创建包含缺失值的数据
 df_clean=df.copy()#创建一个原始数据框df的副本。
@@ -89,7 +90,7 @@ print(df_clean.fillna(df_clean.mean()))#使用平均值填充缺失值
 #删除包含缺失值的行
 print(df_clean.dropna())
 ```
-7.数据合并
+## 7.数据合并
 ```python
 #创建两个DataFrame
 df1=pd.DataFrame({
@@ -107,7 +108,7 @@ merged_df=pd.merge(df1,df2,on='日期')
 #merged_df，合并的依据是它们共有的列 ‘日期’
 print(merged_df)#打印合并后的数据
 ```
-8. 数据导出和导入
+## 8. 数据导出和导入
 ```python
 #导出到csv
 df.to_csv('weather_data.csv',index=False)
