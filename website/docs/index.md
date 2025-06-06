@@ -67,4 +67,7 @@ features:
 5. [K-means聚类](/chapters/chapter5) - 无监督学习入门
 6. [朴素贝叶斯](/chapters/chapter6) - 概率分类器
 
+## 补充包：
+1.[Pandas基本操作](/chapters/pandas)
+2.[进阶pandas](/chapters/propandas)
 每个章节都包含理论讲解、代码实现和实践练习，帮助你全面掌握相关知识。 
