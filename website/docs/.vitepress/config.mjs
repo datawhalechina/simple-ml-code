@@ -19,7 +19,10 @@ export default defineConfig({
           { text: '第3章：决策树', link: '/chapters/chapter3' },
           { text: '第4章：支持向量机', link: '/chapters/chapter4' },
           { text: '第5章：K-means聚类', link: '/chapters/chapter5' },
-          { text: '第6章：朴素贝叶斯', link: '/chapters/chapter6' }
+          { text: '第6章：朴素贝叶斯', link: '/chapters/chapter6' },
+          { text: '第7章：总结', link: '/chapters/chapter7' },
+          { text: '加餐1：pandas', link: '/chapters/pandas' },
+          { text: '加餐2：propandas·', link: '/chapters/propandas' }
         ]
       }
     ],
